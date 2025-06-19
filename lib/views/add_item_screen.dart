@@ -3,7 +3,9 @@ import '../models/item.dart';
 import '../services/api_service.dart';
 
 class AddItemScreen extends StatefulWidget {
-  const AddItemScreen({Key? key}) : super(key: key);
+  final Item? item;
+
+  const AddItemScreen({Key? key, this.item}) : super(key: key);
 
   @override
   _AddItemScreenState createState() => _AddItemScreenState();
@@ -15,23 +17,46 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final _anoController = TextEditingController();
   final _paginasController = TextEditingController();
 
+  bool get isEditing => widget.item != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isEditing) {
+      _tituloController.text = widget.item!.titulo;
+      _anoController.text = widget.item!.anoLanca;
+      _paginasController.text = widget.item!.paginas?.toString() ?? '';
+    }
+  }
+
   @override
   void dispose() {
     _tituloController.dispose();
     _anoController.dispose();
+    _paginasController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       try {
-        Item newItem = Item(
-          titulo: _tituloController.text,
-          anoLanca: _anoController.text,
-          paginas: int.tryParse(_paginasController.text) ?? 0,
-        );
+        if (isEditing) {
+          final updatedItem = Item(
+            id: widget.item!.id,
+            titulo: _tituloController.text,
+            anoLanca: _anoController.text,
+            paginas: int.tryParse(_paginasController.text) ?? 0,
+          );
+          await ApiService.updateItem(updatedItem);
+        } else {
+          final newItem = Item(
+            titulo: _tituloController.text,
+            anoLanca: _anoController.text,
+            paginas: int.tryParse(_paginasController.text) ?? 0,
+          );
+          await ApiService.addItem(newItem);
+        }
 
-        await ApiService.addItem(newItem);
         Navigator.of(context).pop();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -45,7 +70,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Adicionar Item')),
+      appBar: AppBar(title: Text(isEditing ? 'Editar Item' : 'Adicionar Item')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -115,7 +140,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: const Text('Salvar'),
+                child: Text(isEditing ? 'Atualizar' : 'Salvar'),
               ),
             ],
           ),
