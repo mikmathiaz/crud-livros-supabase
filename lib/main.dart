@@ -19,19 +19,49 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF6A1B9A);
+    const accentColor = Color(0xFFAB47BC);
+    const backgroundColor = Color(0xFF121212);
+    const cardColor = Color(0xFF1E1E1E);
+
     return MaterialApp(
       title: 'App Supabase',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.purple,
-          foregroundColor: Colors.white,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: backgroundColor,
+        primaryColor: primaryColor,
+        appBarTheme: const AppBarTheme(elevation: 0),
+        cardTheme: CardTheme(
+          color: cardColor,
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.purple,
+          backgroundColor: accentColor,
           foregroundColor: Colors.white,
         ),
-        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: cardColor,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          labelStyle: const TextStyle(color: Colors.white70),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: accentColor,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
       ),
       home: const ItemListScreen(),
       debugShowCheckedModeBanner: false,

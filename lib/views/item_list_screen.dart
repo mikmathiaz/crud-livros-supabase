@@ -98,32 +98,53 @@ class _ItemListScreenState extends State<ItemListScreen> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               Item item = snapshot.data![index];
-              return ListTile(
-                title: Text(item.titulo),
-                subtitle: Text(item.anoLanca),
-                trailing: Row(
-                  mainAxisSize:
-                      MainAxisSize.min, // Para a Row ocupar o mínimo de espaço
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () async {
-                        // Navega para a tela de edição, passando o item atual
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddItemScreen(item: item),
-                          ),
-                        );
-                        // Atualiza a lista quando voltar
-                        _refreshItems();
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _showDeleteDialog(item.id!),
-                    ),
-                  ],
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.book, color: Colors.white70, size: 40),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.titulo,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Ano: ${item.anoLanca} - Páginas: ${item.paginas ?? "N/A"}',
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Color(0xFF80DEEA)),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddItemScreen(item: item),
+                            ),
+                          );
+                          _refreshItems();
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Color(0xFFE57373),
+                        ),
+                        onPressed: () => _showDeleteDialog(item.id!),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
